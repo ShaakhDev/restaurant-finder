@@ -6,49 +6,65 @@
  */
 
 import React, {useEffect} from 'react';
-import type {PropsWithChildren} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
-  Text,
   useColorScheme,
-  View,
+  Platform,
+  PermissionsAndroid,
 } from 'react-native';
-
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import Geolocation, {
-  GeolocationResponse,
-} from '@react-native-community/geolocation';
-
-Geolocation.getCurrentPosition(info => console.log(info));
+import Geolocation from 'react-native-geolocation-service';
+import {NavigationContainer} from '@react-navigation/native';
+import {MainNavigation} from './src/router';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  const [location, setLocation] = React.useState<GeolocationResponse>();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
   useEffect(() => {
-    Geolocation.getCurrentPosition(info => setLocation(info));
+    async function requestLocationPermission() {
+      if (Platform.OS === 'android') {
+        try {
+          await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          );
+        } catch (error) {}
+      } else {
+        await Geolocation.requestAuthorization('whenInUse');
+      }
+    }
+
+    requestLocationPermission();
   }, []);
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <ScrollView style={styles.container}>
-        <Text>lat: {location?.coords?.latitude}</Text>
-        <Text>lon: {location?.coords?.longitude}</Text>
-      </ScrollView>
-    </SafeAreaView>
+    <SafeAreaProvider style={[backgroundStyle, styles.container]}>
+      <SafeAreaView style={{flex: 1}}>
+        <NavigationContainer>
+          <MainNavigation />
+        </NavigationContainer>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  darkText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
   },
 });
 
