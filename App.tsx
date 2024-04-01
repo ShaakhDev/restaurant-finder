@@ -4,7 +4,7 @@
  *
  * @format
  */
-
+import 'core-js/actual/url-search-params';
 import React, {useEffect} from 'react';
 import {
   StyleSheet,
@@ -43,7 +43,7 @@ function App(): React.JSX.Element {
 
   return (
     <SafeAreaProvider style={[backgroundStyle, styles.container]}>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
         <NavigationContainer>
           <MainNavigation />
         </NavigationContainer>

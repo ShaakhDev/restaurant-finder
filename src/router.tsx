@@ -1,12 +1,38 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Home} from './screens/home';
 import {MapView} from './screens/map-view';
-import {TabBar} from './components/my-tab-bar';
 import HomeIcon from './resources/icons/home';
 import MapIcon from './resources/icons/map';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Text, View} from 'react-native';
+import {RestaurantDetails} from './screens/restaurant-detail';
+
+const Stack = createNativeStackNavigator();
 
 const Tab = createBottomTabNavigator();
+
 export const MainNavigation = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Tab"
+        component={TabNavigation}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Restaurant"
+        component={RestaurantDetails}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const TabNavigation = () => {
   return (
     <Tab.Navigator
       screenOptions={({}) => ({
